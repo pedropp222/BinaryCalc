@@ -52,7 +52,7 @@ namespace binaries
                         Console.WriteLine("PARSE EXCEPTION: " + exp.Message);
                         Console.WriteLine("===================");
                         Console.WriteLine(tokenized.PrintProgram(exp.errorLocation));
-                        return;
+                        continue;
                     }
 
                     BinaryValue bv = e.Evaluate();
