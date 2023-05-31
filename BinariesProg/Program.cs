@@ -9,7 +9,7 @@ namespace binaries
 {
     internal class Program
     {
-        private static string version = "1.0.0";
+        private static string version = "1.1.0";
 
         static void Main(string[] args)
         {

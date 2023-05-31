@@ -9,7 +9,7 @@
         PLUS, MINUS,
 
         //KEYWORDS
-        AND, OR, NOT, 
+        AND, OR, NOT, XOR, NAND,
 
         EOF
     }

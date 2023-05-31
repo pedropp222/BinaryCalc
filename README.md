@@ -6,10 +6,11 @@ This is a console program that lets you calculate and evaluate expressions to bi
 
 - Conversion between binary/decimal/hexadecimal
 - 2's complement representation
-- Capable of executing expressions such as adding, subtraction and bitwise `AND`, and `OR` and `NOT`
+- Capable of executing expressions such as adding, subtraction and bitwise `AND`,`OR`,`NOT` and more
 - Expressions can have multiple types of numbers, so `135 + NOT(F OR 10011)` is a valid expression
 - Somewhat pretty error messages in all operations (lexing, parsing, executing)
-- Value overflow detection (not 100% complete yet)
+- Value overflow detection
+- Passing Unit Test suite
 
 ## Guide
 
@@ -25,6 +26,7 @@ If you wish that `1111` was treated as something other that binary, like decimal
 - `-`: subtract the left and right values
 - `AND`: bitwise AND the left and right values
 - `OR`: bitwise OR the left and right values
+- `XOR`: bitwise XOR the left and right values
 - `NOT`: negate the value at the right
 - `()`: you can use parentheses to control the order of execution
 - `b/d/x`: you can prefix the numeric values to make sure it gets represented correctly(e.g., `10101` could be binary or decimal, use `b10101` to enforce binary, and so on).

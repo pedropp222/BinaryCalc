@@ -59,7 +59,7 @@ namespace binaries.src.AST
         {
             Expression exp = ParseUnary();
 
-            while (Match(TokenType.AND,TokenType.OR))
+            while (Match(TokenType.AND,TokenType.OR,TokenType.XOR,TokenType.NAND))
             {
                 exp = new Binary(exp, Previous(), ParseUnary(),current);
             }
@@ -98,7 +98,15 @@ namespace binaries.src.AST
                 return new Grouping(exp);
             }
 
-            Console.WriteLine("Error parsing: Unexpected token " + Previous().tokenType.ToString());            
+            Token previous = Previous();
+            if (previous != null)
+            {
+                Console.WriteLine("Error parsing: Unexpected token " + Previous().tokenType.ToString());
+            }
+            else
+            {
+                Console.WriteLine("I don't know what to tell ya");
+            }
             return null;
         }
 
@@ -141,6 +149,7 @@ namespace binaries.src.AST
 
         private Token Previous()
         {
+            if (current == 0) return null;
             return tokens[current - 1];
         }
     }

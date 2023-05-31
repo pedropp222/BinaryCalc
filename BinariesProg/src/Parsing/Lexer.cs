@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,6 +12,7 @@ namespace binaries.Parsing
     internal class Lexer
     {
         private Dictionary<string, TokenType> keywords;
+        private List<char> neutralChars;
 
         private List<Token> tokens;
 
@@ -22,17 +24,16 @@ namespace binaries.Parsing
         public Lexer() 
         { 
             keywords = new Dictionary<string, TokenType>();
+            neutralChars = new List<char>();
             tokens = new List<Token>();
 
-            keywords.Add("+", TokenType.PLUS);
-            keywords.Add("-", TokenType.MINUS);
-            keywords.Add("(", TokenType.LEFT_PAREN);
-            keywords.Add(")", TokenType.RIGHT_PAREN);
+            neutralChars.AddRange(new[] { ' ', '+', '-', '(', ')', '\0' });
 
             keywords.Add("AND", TokenType.AND);
             keywords.Add("OR", TokenType.OR);
-
             keywords.Add("NOT", TokenType.NOT);
+            keywords.Add("XOR", TokenType.XOR);
+            keywords.Add("NAND", TokenType.NAND);
         }
 
 
@@ -74,66 +75,6 @@ namespace binaries.Parsing
                 case '-':
                     tokens.Add(new Token(TokenType.MINUS,"-"));
                 break;
-                case 'O':
-                    c = NextChar();
-                    if (c == 'R')
-                    {
-                        tokens.Add(new Token(TokenType.OR));
-                    }
-                    else
-                    {
-                        Console.WriteLine("EXPECTED 'R' AFTER O");
-                        error = true;
-                        return;
-                    }
-                break;
-                case 'A':
-                    c = NextChar();
-                    if (c == 'N')
-                    {
-                        c = NextChar();
-                        if (c == 'D')
-                        {
-                            tokens.Add(new Token(TokenType.AND));
-                        }
-                        else
-                        {
-                            Console.WriteLine("EXPECTED 'D' AFTER 'AN'");
-                            error = true;
-                        }
-                    }
-                    else if (IsNumber(c))
-                    {
-                        current--;
-                        ParseNumber(NumberType.HEX);
-                    }
-                    else
-                    {
-                        Console.WriteLine("UNKNOWN CHARACTER '"+c+"' AFTER 'A'. EXPECTED 'AND' OR HEX NUMBER");
-                        error = true;
-                    }
-                break;
-                case 'N':
-                    c = NextChar();
-                    if (c == 'O')
-                    {
-                        c = NextChar();
-                        if (c == 'T')
-                        {
-                            tokens.Add(new Token(TokenType.NOT));
-                        }
-                        else
-                        {
-                            Console.WriteLine("EXPECTED 'T' AFTER 'NO'");
-                            error = true;
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("EXPECTED 'O' AFTER 'N'");
-                        error = true;
-                    }
-                break;
                 case 'x':
                     c = NextChar();
                     if (IsNumber(c))
@@ -170,19 +111,62 @@ namespace binaries.Parsing
                         error = true;
                     }
                 break;
+                case '\0':
+                break;
                 default:
-                    if (IsNumber(c))
+                    if (IsDecimal(c))
                     {
                         ParseNumber(NumberType.UNKNOWN);
+                        break;
                     }
-                    else if (c != '\0')
-                    {
-                        Console.WriteLine("UNKNOWN SYMBOL '" + c + "'");
-                        error = true;
-                    }
+                    ParseKeywordOrHexNumber();
                     break;
             }
 
+        }
+
+        private void ParseKeywordOrHexNumber()
+        {
+            int charCount = 0;
+
+            string word = "";
+
+            char c = input[current - 1];
+
+            while (c!=' '&&!Parsed())
+            {
+                charCount++;
+                word += c;
+                if (keywords.ContainsKey(word))
+                {
+                    c = Peek();
+                    if (IsNeutralChar(c))
+                    {
+                        tokens.Add(new Token(keywords.GetValueOrDefault(word)));
+                        return;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Keyword '" + word +"' must be followed by space or parenthesis");
+                        error = true;
+                        return;
+                    }
+                }
+
+                c = NextChar();
+            }
+
+            current -= charCount;
+
+            if (IsNumber(c))
+            {
+                ParseNumber(NumberType.UNKNOWN);
+            }
+            else
+            {
+                Console.WriteLine("Unknown Token: '" + word + "'");
+                error = true;
+            }
         }
 
         private void ParseNumber(NumberType type)
@@ -222,7 +206,13 @@ namespace binaries.Parsing
 
             if (!Parsed())
             {
-                //we consumed a token while searching for a number and must go back
+                if (!IsNeutralChar(c))
+                {
+                    Console.WriteLine("Expected space or parenthesis after numeric value '" + number.ToString() + "'");
+                    error = true;
+                    return;
+                }
+                //we consumed a character while searching for a number and must go back
                 current--;
             }
             
@@ -231,6 +221,11 @@ namespace binaries.Parsing
                 currentType == NumberType.DECIMAL 
                 ? TokenType.DECIMAL_VALUE : TokenType.HEX_VALUE,
                 number.ToString()));
+        }
+
+        private bool IsNeutralChar(char c)
+        {
+            return neutralChars.Contains(c);
         }
 
         private NumberType DetermineNumber(char c, NumberType current)
@@ -256,6 +251,20 @@ namespace binaries.Parsing
         private bool IsNumber(char c)
         {
             return c >= '0' && c <= '9' || c >= 'A' && c <= 'F';
+        }
+
+        private bool IsDecimal(char c)
+        {
+            return c >= '0' && c <= '9';
+        }
+
+        private char Peek()
+        {
+            if (current >= input.Length)
+            {
+                return '\0';
+            }
+            return input[current];
         }
 
         private char NextChar()

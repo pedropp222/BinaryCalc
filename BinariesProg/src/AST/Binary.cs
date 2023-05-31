@@ -55,6 +55,14 @@ namespace binaries.src.AST
                     {
                         return BinaryUtils.Or(l, r);
                     }
+                case TokenType.XOR:
+                    {
+                        return BinaryUtils.Xor(l, r);
+                    }
+                case TokenType.NAND:
+                    {
+                        return BinaryUtils.Nand(l, r);
+                    }
                 case TokenType.PLUS:
                     {
                         return l.Add(r);
