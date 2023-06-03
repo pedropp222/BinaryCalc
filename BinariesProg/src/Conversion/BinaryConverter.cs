@@ -123,6 +123,59 @@ namespace binaries.Conversion
             return -BinaryToDecimal(BinaryUtils.Negate(binary).Add(BinaryValue.ONE()));
         }
 
+        public static int DecimalToBase(int dec, int b)
+        {
+            int num = 0;
+            int iter = 0;
+
+            while(dec > 0)
+            {
+                int rem = dec % b;
+                if (iter == 0)
+                {
+                    num = rem;
+                }
+                else
+                {
+                    int index = (int)Math.Pow(10, iter);
+                    num += rem*(index);
+                }
+
+                dec /= b;
+                iter++;
+            }
+
+            return num;
+        }
+
+        public static int QuadToDecimal(int quad)
+        {
+            string str = quad.ToString();
+
+            int value = 0;
+
+            for(int i = str.Length-1; i >= 0; i--)
+            {
+                value += (int)(Math.Pow(4,str.Length-1-i) * (str[i]-48));
+            }
+
+            return value;
+        }
+
+        public static int OctalToDecimal(int oct)
+        {
+            string str = oct.ToString();
+
+            int value = 0;
+
+            for (int i = str.Length - 1; i >= 0; i--)
+            {
+                value += (int)(Math.Pow(8, str.Length - 1 - i) * (str[i] - 48));
+            }
+
+            return value;
+        }
+
         private static void FillCharArr(char[] array)
         {
             for (int i = 0; i < array.Length; i++)

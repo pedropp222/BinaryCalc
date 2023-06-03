@@ -1,10 +1,5 @@
 ﻿using binaries.Representation;
 using binaries.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BinariesTests
 {

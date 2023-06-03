@@ -38,6 +38,14 @@ namespace binaries.src.AST
             {
                 return new BinaryValue(BinaryConverter.DecimalToBinary(int.Parse(value)).value,false,true);
             }
+            else if (type == TokenType.QUAD_VALUE)
+            {
+                return BinaryConverter.DecimalToBinary(BinaryConverter.QuadToDecimal(int.Parse(value)));
+            }
+            else if (type == TokenType.OCTAL_VALUE)
+            {
+                return BinaryConverter.DecimalToBinary(BinaryConverter.OctalToDecimal(int.Parse(value)));
+            }
             else
             {
                 return BinaryConverter.HexadecimalToBinary(value);

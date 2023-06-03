@@ -9,7 +9,7 @@ namespace binaries
 {
     internal class Program
     {
-        private static string version = "1.1.0";
+        private static string version = "1.2.0";
 
         static void Main(string[] args)
         {
@@ -56,8 +56,14 @@ namespace binaries
                     }
 
                     BinaryValue bv = e.Evaluate();
+                    int dec = BinaryConverter.BinaryToDecimal(bv);
                     Console.WriteLine("===================");
-                    Console.WriteLine("Expression Result: " + bv.ToString()+"(d"+BinaryConverter.BinaryToDecimal(bv)+"|"+BinaryConverter.BinaryToDecimal2Complement(bv)+")(x"+BinaryConverter.BinaryToHexadecimal(bv)+")\n");
+                    Console.WriteLine("Expression Result: " + 
+                        bv.ToFancyString()+"(d"+dec+
+                        "|"+BinaryConverter.BinaryToDecimal2Complement(bv)+")" +
+                        "(x"+BinaryConverter.BinaryToHexadecimal(bv)+")" +
+                        "(o"+BinaryConverter.DecimalToBase(dec,8)+")"+
+                        "(q"+ BinaryConverter.DecimalToBase(dec, 4) + ")\n");
                     if (bv.overflow)
                     {
                         Console.WriteLine("Overflow.\n");

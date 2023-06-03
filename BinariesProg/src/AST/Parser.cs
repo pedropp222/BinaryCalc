@@ -79,7 +79,7 @@ namespace binaries.src.AST
 
         private Expression ParseNumber()
         {
-            if (Match(TokenType.DECIMAL_VALUE,TokenType.HEX_VALUE,TokenType.BINARY_VALUE))
+            if (Match(TokenType.DECIMAL_VALUE,TokenType.HEX_VALUE,TokenType.BINARY_VALUE,TokenType.QUAD_VALUE,TokenType.OCTAL_VALUE))
             {
                 return new Literal(Previous().value, Previous().tokenType);
             }

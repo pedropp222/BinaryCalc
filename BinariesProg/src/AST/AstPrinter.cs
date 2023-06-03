@@ -50,7 +50,7 @@ namespace binaries.src.AST
 
         public string VisitLiteralExpr(Literal expr)
         {
-            return expr.value;
+            return expr.type +"."+expr.value;
         }
 
         public string VisitUnaryExpr(Unary expr)

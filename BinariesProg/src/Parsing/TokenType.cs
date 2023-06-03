@@ -3,7 +3,7 @@
     internal enum TokenType
     {
         //NUMBERS
-        BINARY_VALUE, HEX_VALUE, DECIMAL_VALUE,
+        BINARY_VALUE, QUAD_VALUE, OCTAL_VALUE, DECIMAL_VALUE, HEX_VALUE,
         
         LEFT_PAREN, RIGHT_PAREN,
         PLUS, MINUS,

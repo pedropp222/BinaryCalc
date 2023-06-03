@@ -18,7 +18,7 @@ namespace binaries.Representation
         {
             StringBuilder sb = new StringBuilder(value.Length);
 
-            for(int i = 0; i < value.Length; i++)
+            for (int i = 0; i < value.Length; i++)
             {
                 if (value[i] == '0' || value[i] == '1')
                 {
@@ -68,17 +68,17 @@ namespace binaries.Representation
                 second = true;
             }
 
-            v2 = ConvertUtils.PadBinary(new BinaryValue(v2), v1.Length,(second ? this.twoComplement : b.twoComplement)).value;
+            v2 = ConvertUtils.PadBinary(new BinaryValue(v2), v1.Length, (second ? this.twoComplement : b.twoComplement)).value;
 
             char[] bits = new char[v1.Length];
 
             bool carry = false;
-            for (int i = v1.Length-1; i >= 0; i--)
+            for (int i = v1.Length - 1; i >= 0; i--)
             {
                 int valuea = v1[i];
                 int valueb = v2[i];
 
-                int sum = (valuea-48) + (valueb-48) + (carry ? 1 : 0);
+                int sum = (valuea - 48) + (valueb - 48) + (carry ? 1 : 0);
 
                 if (sum > 1)
                 {
@@ -89,13 +89,13 @@ namespace binaries.Representation
                 {
                     carry = false;
                 }
-                
-                bits[i] = (char)(sum+48);
+
+                bits[i] = (char)(sum + 48);
             }
 
             if ((carry && (this.preventOverflow || b.preventOverflow)) && !b.twoComplement)
             {
-                string p = '1'+new string(bits);
+                string p = '1' + new string(bits);
                 int len = ConvertUtils.PadNumber(p.Length, 4);
                 return ConvertUtils.PadBinary(new BinaryValue(p), len, twoComplement);
             }
@@ -110,7 +110,7 @@ namespace binaries.Representation
                 return ConvertUtils.PadBinary(new BinaryValue(p), len, b.twoComplement);
             }
 
-            return new BinaryValue(new string(bits),carry);
+            return new BinaryValue(new string(bits), carry);
         }
 
         public BinaryValue Negative2Complement()
@@ -123,6 +123,22 @@ namespace binaries.Representation
         public override string ToString()
         {
             return value;
+        }
+
+        public string ToFancyString()
+        {
+            StringBuilder sb = new StringBuilder(value.Length);
+
+            for (int i = 0; i < value.Length; i++)
+            {
+                sb.Append(value[i]);
+                if (i != 0 && (i+1) % 4 == 0)
+                {
+                    sb.Append(' ');
+                }
+            }
+
+            return sb.ToString();
         }
     }
 }

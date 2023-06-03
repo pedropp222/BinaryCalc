@@ -2,13 +2,15 @@
 {
     internal class Token
     {
-        public readonly TokenType tokenType;
+        public TokenType tokenType;
         public readonly string value;
+        public readonly bool strict;
 
-        public Token(TokenType type, string value)
+        public Token(TokenType type, string value, bool strict = false)
         {
             tokenType = type;
             this.value = value;
+            this.strict = strict;
         }
 
         public Token(TokenType type)

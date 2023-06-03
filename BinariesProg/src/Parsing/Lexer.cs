@@ -51,6 +51,26 @@ namespace binaries.Parsing
 
             tokens.Add(new Token(TokenType.EOF, ""));
 
+            if (!error)
+            {
+                //Normalize all automatically set numeric values to biggest numeric type
+                int maxType = 0;
+                foreach(Token t in tokens)
+                {
+                    if (t.tokenType <= TokenType.HEX_VALUE)
+                    {
+                        maxType = Math.Max(maxType, (int)t.tokenType);
+                    }
+                }
+                foreach (Token t in tokens)
+                {
+                    if (t.tokenType <= TokenType.HEX_VALUE && !t.strict)
+                    {
+                        t.tokenType = (TokenType)maxType;
+                    }
+                }
+            }
+
             return new TokenizedProgram(tokens,error?LexerResult.ERROR:LexerResult.SUCCESS);
         }
 
@@ -111,6 +131,30 @@ namespace binaries.Parsing
                         error = true;
                     }
                 break;
+                case 'q':
+                    c = NextChar();
+                    if (IsNumber(c))
+                    {
+                        ParseNumber(NumberType.QUAD);
+                    }
+                    else
+                    {
+                        Console.WriteLine("EXPECTED QUAD NUMBER AFTER 'q'");
+                        error = true;
+                    }
+                break;
+                case 'o':
+                    c = NextChar();
+                    if (IsNumber(c))
+                    {
+                        ParseNumber(NumberType.OCT);
+                    }
+                    else
+                    {
+                        Console.WriteLine("EXPECTED OCTAL NUMBER AFTER 'o'");
+                        error = true;
+                    }
+                    break;
                 case '\0':
                 break;
                 default:
@@ -157,6 +201,7 @@ namespace binaries.Parsing
             }
 
             current -= charCount;
+            c = input[current - 1];
 
             if (IsNumber(c))
             {
@@ -215,12 +260,24 @@ namespace binaries.Parsing
                 //we consumed a character while searching for a number and must go back
                 current--;
             }
-            
-            tokens.Add(new Token(currentType == NumberType.BINARY 
-                ? TokenType.BINARY_VALUE : 
-                currentType == NumberType.DECIMAL 
-                ? TokenType.DECIMAL_VALUE : TokenType.HEX_VALUE,
-                number.ToString()));
+
+            TokenType nType;
+
+            switch (currentType)
+            {
+                case NumberType.BINARY:
+                    nType = TokenType.BINARY_VALUE; break;
+                case NumberType.QUAD: 
+                    nType = TokenType.QUAD_VALUE; break;
+                case NumberType.DECIMAL:
+                    nType = TokenType.DECIMAL_VALUE; break;
+                case NumberType.OCT:
+                    nType = TokenType.OCTAL_VALUE; break;
+                default:
+                    nType = TokenType.HEX_VALUE; break;
+            }
+
+            tokens.Add(new Token(nType,number.ToString(),enforceType));
         }
 
         private bool IsNeutralChar(char c)
@@ -234,11 +291,15 @@ namespace binaries.Parsing
             {
                 return NumberType.BINARY;
             }
-            else if (c >= '2' && c <= '9' && (int)current <= 1)
+            else if (c >= '2' && c <= '3' && (int) current <= 1)
+            {
+                return NumberType.QUAD;
+            }
+            else if (c >= '4' && c <= '9' && (int) current <= 2)
             {
                 return NumberType.DECIMAL;
             }
-            else if (c >= 'A' && c <= 'F' && (int)current <= 2)
+            else if (c >= 'A' && c <= 'F' && (int) current <= 3)
             {
                 return NumberType.HEX;
             }
@@ -288,8 +349,10 @@ namespace binaries.Parsing
     {
         UNKNOWN,
         BINARY,
+        QUAD,
         DECIMAL,
-        HEX
+        HEX,
+        OCT
     }
 
 }
