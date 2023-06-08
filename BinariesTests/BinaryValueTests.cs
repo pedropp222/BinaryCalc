@@ -292,17 +292,17 @@ namespace BinariesTests
             BinaryValue bv = new BinaryValue("110011");
             BinaryValue res = bv.Negative2Complement();
             Assert.IsFalse(res.overflow);
-            Assert.AreEqual("001101", res.value);
+            Assert.AreEqual("11001101", res.value);
 
             bv = new BinaryValue("11111");
             res = bv.Negative2Complement();
             Assert.IsFalse(res.overflow);
-            Assert.AreEqual("00001", res.value);
+            Assert.AreEqual("11100001", res.value);
 
             bv = new BinaryValue("10001101");
             res = bv.Negative2Complement();
             Assert.IsFalse(res.overflow);
-            Assert.AreEqual("01110011", res.value);
+            Assert.AreEqual("111101110011", res.value);
 
             bv = new BinaryValue("01011");
             res = bv.Negative2Complement();
@@ -312,7 +312,7 @@ namespace BinariesTests
             bv = new BinaryValue("11111111111");
             res = bv.Negative2Complement();
             Assert.IsFalse(res.overflow);
-            Assert.AreEqual("00000000001", res.value);
+            Assert.AreEqual("100000000001", res.value);
 
             bv = new BinaryValue("00101011");
             res = bv.Negative2Complement();

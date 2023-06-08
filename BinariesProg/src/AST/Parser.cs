@@ -59,7 +59,7 @@ namespace binaries.src.AST
         {
             Expression exp = ParseUnary();
 
-            while (Match(TokenType.AND,TokenType.OR,TokenType.XOR,TokenType.NAND))
+            while (Match(TokenType.AND,TokenType.OR,TokenType.XOR,TokenType.NAND,TokenType.SHIFT_LEFT,TokenType.SHIFT_RIGHT))
             {
                 exp = new Binary(exp, Previous(), ParseUnary(),current);
             }
@@ -70,6 +70,10 @@ namespace binaries.src.AST
         private Expression ParseUnary()
         {
             if (Match(TokenType.NOT))
+            {
+                return new Unary(Previous(), ParseUnary(), current);
+            }
+            else if (Match(TokenType.MINUS))
             {
                 return new Unary(Previous(), ParseUnary(), current);
             }

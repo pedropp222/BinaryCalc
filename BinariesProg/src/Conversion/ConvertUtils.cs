@@ -73,7 +73,7 @@ namespace binaries.Conversion
 
             sb.Append(binary);
 
-            return new BinaryValue(sb.ToString());
+            return new BinaryValue(sb.ToString(),false,binary.preventOverflow);
         }
     }
 }

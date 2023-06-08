@@ -95,6 +95,12 @@ namespace binaries.Parsing
                 case '-':
                     tokens.Add(new Token(TokenType.MINUS,"-"));
                 break;
+                case '>':
+                    tokens.Add(new Token(TokenType.SHIFT_RIGHT,">"));
+                break;
+                case '<':
+                    tokens.Add(new Token(TokenType.SHIFT_LEFT, "<"));
+                break;
                 case 'x':
                     c = NextChar();
                     if (IsNumber(c))

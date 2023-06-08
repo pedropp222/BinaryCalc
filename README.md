@@ -1,13 +1,13 @@
 # BinaryCalc
 
-This is a console program that lets you calculate and evaluate expressions to binary, hex and decimal numbers.
+This is a C# console program that lets you calculate and evaluate expressions to binary, hex and decimal numbers.
 
 ## Features
 
 - Conversion between binary/decimal/hexadecimal/octal
 - 2's complement representation
 - Capable of executing expressions such as adding, subtraction and bitwise `AND`,`OR`,`NOT` and more
-- Expressions can have multiple types of numbers, so `135 + NOT(F OR 10011)` is a valid expression (all numbers get normalized to the biggest numeric type, so in this case all three numbers will be hexadecimal)
+- Expressions can have multiple types of values, so `135 + NOT(F OR 10011)` is a valid expression (all numbers get normalized to the biggest numeric type, so in this case all three numbers will be hexadecimal)
 - Somewhat pretty error messages in all operations (lexing, parsing, executing)
 - Value overflow detection
 - Passing Unit Test suite
@@ -23,14 +23,16 @@ If you wish that `1111` was treated as something other that binary, like decimal
 ## Available operations
 
 - `+`: add the left and right values
-- `-`: subtract the left and right values
+- `-`: subtract the left and right values or set right value to negative
 - `AND`: bitwise AND the left and right values
 - `OR`: bitwise OR the left and right values
 - `XOR`: bitwise XOR the left and right values
 - `NAND`: bitwise NAND the left and right values
 - `NOT`: negate the value at the right
+- `>` : right shift the left side value by the right side amount
+- `<` : left shift the left side value by the right side amount
 - `()`: you can use parentheses to control the order of execution
-- `b/d/x/q/o`: you can prefix the numeric values to make sure it gets represented correctly(e.g., `10101` could be binary or decimal, use `b10101` to enforce binary, and so on).
+- `b/d/x/q/o`: you can prefix the numeric values to make sure it gets represented correctly(e.g., `10101` could be binary or something else, use `b10101` to enforce binary, and so on).
 
 ## Examples
 
@@ -48,9 +50,15 @@ Here is a table of expression inputs and their respective output.
 | `x5478 AND xFDEA`                   | `0101010001101000(d21608\|21608)(x5468)`        |
 | `NOT(NOT(xDEFA) AND (NOT(xFFFF)))`  | `1111111111111111(d65535\|-1)(xFFFF)`           |
 | `NOT((0 OR 1) AND (0 AND 0 AND 1))` | `1(d1\|-1)(x1)`                                 |
+| `128 > 2`                           | `0010 0000(d32\|32)(x20)`                       |
+| `-64 < 3`                           | `1110 0000 0000 (d3584\|-512)(xE00)`            |
+| `xEC < d3`                           | `0110 0000 (d96\|96)(x60)`                     |
+| `-d20-10`                           | `1110 0010 (d226\|-30)(xE2)`                    |
+| `-250+50`                           | `1111 0011 1000 (d3896\|-200)(xF38)`            |
+| `-151--20`                          | `1111 0111 1101 (d3965\|-131)(xF7D)`            |
+| `--5- --3`                          | `0010 (d2\|2)(x2)`                              |
 
 ## Todo
 
-- `True` negative numbers. You cannot write `-20` directly, but can perform a subtraction that results in the value `-20`.
 - IEEE floating point numbers
 - Other things

@@ -136,5 +136,59 @@ namespace BinariesTests
 
             Assert.AreEqual("0111111110", res.value);
         }
+
+        [TestMethod]
+        public void BinaryUtils_ShiftRight_Tests()
+        {
+            BinaryValue bv = BinaryUtils.Shift(new BinaryValue("10000"), 6);
+
+            Assert.AreEqual("00000", bv.value);
+
+            bv = BinaryUtils.Shift(new BinaryValue("10010"), 1);
+
+            Assert.AreEqual("01001", bv.value);
+
+            bv = BinaryUtils.Shift(new BinaryValue("10010"), 3);
+
+            Assert.AreEqual("00010", bv.value);
+
+            bv = BinaryUtils.Shift(new BinaryValue("10101101"), 5);
+
+            Assert.AreEqual("00000101", bv.value);
+
+            bv = BinaryUtils.Shift(new BinaryValue("111010111001"), 7);
+
+            Assert.AreEqual("000000011101", bv.value);
+
+            bv = BinaryUtils.Shift(new BinaryValue("111010111001"), 15);
+
+            Assert.AreEqual("000000000000", bv.value);
+        }
+
+        [TestMethod]
+        public void BinaryUtils_ShiftLeft_Tests()
+        {
+            BinaryValue bv = BinaryUtils.Shift(new BinaryValue("100101"), -7);
+
+            Assert.AreEqual("000000", bv.value);
+
+            bv = BinaryUtils.Shift(new BinaryValue("10010"), -1);
+
+            Assert.AreEqual("00100", bv.value);
+
+            bv = BinaryUtils.Shift(new BinaryValue("1111000"), -3);
+
+            Assert.AreEqual("1000000", bv.value);
+
+            bv = BinaryUtils.Shift(new BinaryValue("10010110"), -5);
+
+            Assert.AreEqual("11000000", bv.value);
+
+            bv = BinaryUtils.Shift(new BinaryValue("001100111001"), -7);
+
+            Assert.AreEqual("110010000000", bv.value);
+        }
+
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using binaries.Parsing;
+﻿using binaries.Conversion;
+using binaries.Parsing;
 using binaries.Representation;
 using binaries.src.Parsing;
 using binaries.src.Utils;
@@ -34,9 +35,14 @@ namespace binaries.src.AST
         public override BinaryValue Evaluate(int depth)
         {
             //PrintUtils.PrintDepth("We negate the following thing:(", depth);
-            BinaryValue bv = BinaryUtils.Negate(right.Evaluate(depth+1));
+            
+            if (op.tokenType == TokenType.MINUS)
+            {
+                return right.Evaluate(depth + 1).Negative2Complement();
+            }
+
+            return BinaryUtils.Negate(right.Evaluate(depth + 1));
             //PrintUtils.PrintDepth(")", depth);
-            return bv;
         }
     }
 }

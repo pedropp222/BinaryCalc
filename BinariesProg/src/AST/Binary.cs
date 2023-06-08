@@ -1,4 +1,5 @@
-﻿using binaries.Parsing;
+﻿using binaries.Conversion;
+using binaries.Parsing;
 using binaries.Representation;
 using binaries.src.Parsing;
 using binaries.src.Utils;
@@ -70,6 +71,14 @@ namespace binaries.src.AST
                 case TokenType.MINUS:
                     {
                         return l.Subtract(r);
+                    }
+                case TokenType.SHIFT_RIGHT:
+                    {
+                        return BinaryUtils.Shift(l, BinaryConverter.BinaryToDecimal(r));
+                    }
+                case TokenType.SHIFT_LEFT:
+                    {
+                        return BinaryUtils.Shift(l, -BinaryConverter.BinaryToDecimal(r));
                     }
                 default:
                     {

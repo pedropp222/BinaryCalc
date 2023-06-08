@@ -6,8 +6,8 @@ namespace binaries.Representation
 {
     public class BinaryValue : Value
     {
-        private bool preventOverflow;
-        private bool twoComplement;
+        public bool preventOverflow { get; private set; }
+        public bool twoComplement { get; private set; }
 
         public BinaryValue(string value, bool overflow = false, bool preventOverflow = false) : base(value, overflow)
         {
@@ -46,7 +46,6 @@ namespace binaries.Representation
         public BinaryValue Subtract(BinaryValue b)
         {
             b = b.Negative2Complement();
-            b.twoComplement = true;
             return this.Add(b);
         }
 
@@ -93,7 +92,7 @@ namespace binaries.Representation
                 bits[i] = (char)(sum + 48);
             }
 
-            if ((carry && (this.preventOverflow || b.preventOverflow)) && !b.twoComplement)
+            if ((carry && (this.preventOverflow || b.preventOverflow)) && (!b.twoComplement&&!this.twoComplement))
             {
                 string p = '1' + new string(bits);
                 int len = ConvertUtils.PadNumber(p.Length, 4);
@@ -102,22 +101,44 @@ namespace binaries.Representation
 
             if (twoComplement || b.twoComplement) carry = false;
 
-            //Prevent two complement sumation that should become negative from becoming positive
-            if (second && b.twoComplement && bits[0] != '1')
-            {
-                string p = '1' + new string(bits);
-                int len = ConvertUtils.PadNumber(p.Length, 4);
-                return ConvertUtils.PadBinary(new BinaryValue(p), len, b.twoComplement);
-            }
+            return new BinaryValue(new string(bits), carry,this.preventOverflow | b.preventOverflow);
+        }
 
-            return new BinaryValue(new string(bits), carry);
+        private bool IsZero()
+        {
+            return !this.value.Contains('1');
         }
 
         public BinaryValue Negative2Complement()
         {
-            BinaryValue bv = BinaryUtils.Negate(this);
+            if (IsZero()) return this;
+
+            BinaryValue bv;
+
+            if (this.value[0] == '1' && !this.twoComplement)
+            {
+                string p = '0' + this.value;
+                int len = ConvertUtils.PadNumber(p.Length, 4);
+                bv = BinaryUtils.Negate(ConvertUtils.PadBinary(new BinaryValue(p), len, this.twoComplement));
+            }
+            else
+            {
+                bv = BinaryUtils.Negate(this);
+            }
+
+
+            bv.preventOverflow = true;
             bv.twoComplement = true;
-            return bv.Add(ONE());
+            bv = bv.Add(ONE());
+            if (bv.value[0] == '0' && this.twoComplement)
+            {
+                bv.twoComplement = false;
+            }
+            else
+            { 
+                bv.twoComplement = true;
+            }
+            return bv;
         }
 
         public override string ToString()
