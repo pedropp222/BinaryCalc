@@ -1,13 +1,6 @@
 ﻿using binaries.Conversion;
 using binaries.Parsing;
 using binaries.Representation;
-using binaries.src.Representation;
-using binaries.src.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace binaries.src.AST
 {

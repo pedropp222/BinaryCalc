@@ -160,7 +160,10 @@ namespace binaries.Parsing
                         Console.WriteLine("EXPECTED OCTAL NUMBER AFTER 'o'");
                         error = true;
                     }
-                    break;
+                break;
+                case '$':
+                    ParseIdentifier();
+                break;
                 case '\0':
                 break;
                 default:
@@ -173,6 +176,30 @@ namespace binaries.Parsing
                     break;
             }
 
+        }
+
+        private void ParseIdentifier()
+        {
+            StringBuilder sb = new StringBuilder();
+            char c = NextChar();
+
+            while (!IsNeutralChar(c) && !Parsed())
+            {
+                sb.Append(c);
+
+                c = NextChar();
+            }
+
+            if (sb.Length > 0)
+            {
+                tokens.Add(new Token(TokenType.IDENT,sb.ToString()));
+                current--;
+            }
+            else
+            {
+                Console.WriteLine("Symbol $ must be followed by any characters without spaces");
+                error = true;
+            }
         }
 
         private void ParseKeywordOrHexNumber()

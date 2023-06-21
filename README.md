@@ -10,6 +10,7 @@ This is a C# console program that lets you calculate and evaluate expressions to
 - Expressions can have multiple types of values, so `135 + NOT(F OR 10011)` is a valid expression (all numbers get normalized to the biggest numeric type, so in this case all three numbers will be hexadecimal)
 - Somewhat pretty error messages in all operations (lexing, parsing, executing)
 - Value overflow detection
+- Can generate truth tables
 - Passing Unit Test suite
 
 ## Guide
@@ -33,6 +34,7 @@ If you wish that `1111` was treated as something other that binary, like decimal
 - `<` : left shift the left side value by the right side amount
 - `()`: you can use parentheses to control the order of execution
 - `b/d/x/q/o`: you can prefix the numeric values to make sure it gets represented correctly(e.g., `10101` could be binary or something else, use `b10101` to enforce binary, and so on).
+- `$`: a prefix used for defining an identifier for computing truth tables
 
 ## Examples
 
@@ -57,6 +59,49 @@ Here is a table of expression inputs and their respective output.
 | `-250+50`                           | `1111 0011 1000 (d3896\|-200)(xF38)`            |
 | `-151--20`                          | `1111 0111 1101 (d3965\|-131)(xF7D)`            |
 | `--5- --3`                          | `0010 (d2\|2)(x2)`                              |
+
+## Truth Tables
+
+It's possible to generate a truth table for any expression. To define the inputs of an expression, introduce identifiers by using the `$` symbol followed by the identifier name. During the processing of the truth table, these values will be replaced with either 0 or 1 and the output be saved.
+Here's a few examples:
+
+- `$A OR $B AND NOT $A`
+
+```lua
+A       B       | Out
+0       0       | 0
+0       1       | 1
+1       0       | 0
+1       1       | 0
+```
+
+- `$A XOR $B OR (NOT $A) NAND $C`
+
+```lua
+A       B       C       | Out
+0       0       0       | 1
+0       0       1       | 0
+0       1       0       | 1
+0       1       1       | 0
+1       0       0       | 1
+1       0       1       | 0
+1       1       0       | 1
+1       1       1       | 1
+```
+
+- `NOT ($A AND ($B OR $C))`
+
+```lua
+A       B       C       | Out
+0       0       0       | 1
+0       0       1       | 1
+0       1       0       | 1
+0       1       1       | 1
+1       0       0       | 1
+1       0       1       | 0
+1       1       0       | 0
+1       1       1       | 0
+```
 
 ## Todo
 

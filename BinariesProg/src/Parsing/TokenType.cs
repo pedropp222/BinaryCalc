@@ -11,6 +11,8 @@
         //KEYWORDS
         AND, OR, NOT, XOR, NAND,
 
+        IDENT,
+
         EOF
     }
 }
